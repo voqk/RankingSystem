@@ -134,6 +134,7 @@
     <Compile Include="Ranking.cs" />
     <Compile Include="RatingPeriod.cs" />
     <Compile Include="Result.cs" />
+    <Compile Include="Team.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

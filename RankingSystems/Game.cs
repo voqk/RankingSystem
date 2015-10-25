@@ -9,33 +9,35 @@ namespace RankingSystems
 {
     public class Game
     {
-        private Player _winner;
+        private Team _winner;
 
-        public Game(Player playerA, Player playerB)
+        public Game(Team teamA, Team teamB)
         {
-            Contract.Requires(playerA != null && playerB != null);
+            Contract.Requires(teamA != null && teamB != null);
 
-            this.PlayerA = playerA;
-            this.PlayerB = playerB;
+            this.TeamA = teamA;
+            this.TeamB = teamB;
         }
 
-        public Player PlayerA { get; }
-        public Player PlayerB { get; }
+        public Team TeamA { get; }
+        public Team TeamB { get; }
 
-        public Player Winner
+        public Team Winner
         {
             get { return _winner; }
             set
             {
-                Contract.Requires(value.Equals(this.PlayerA) || value.Equals(this.PlayerB));
+                Contract.Requires(value.Equals(this.TeamA) || value.Equals(this.TeamB));
+
                 _winner = value;
             }
         }
 
+
         public IEnumerable<Result> GetResults()
         {
-            yield return new Result(this.PlayerA, this.PlayerB, this.Winner);
-            yield return new Result(this.PlayerB, this.PlayerA, this.Winner);
+            yield return new Result(this.TeamA, this.TeamB, this.Winner);
+            yield return new Result(this.TeamB, this.TeamA, this.Winner);
         }
     }
 }

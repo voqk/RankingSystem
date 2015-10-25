@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -15,6 +16,11 @@ namespace RankingSystems
             _rankings = new List<Ranking> { initRanking };
         }
 
+        public Player(double initRanking)
+        {
+            _rankings = new List<Ranking> { new Ranking(initRanking, DateTimeOffset.UtcNow)};
+        }
+
         public Ranking Ranking => _rankings.OrderBy(r => r.TimeStamp).Last();
 
         public IReadOnlyList<Ranking> All => _rankings.OrderBy(r => r.TimeStamp).ToList().AsReadOnly();
@@ -24,30 +30,6 @@ namespace RankingSystems
             Contract.Requires(ranking != null);
 
             _rankings.Add(ranking);
-        }
-    }
-
-    public static class PlayerExtensions
-    {
-        public static Game Defeats(this Player player, Player opponent)
-        {
-            Contract.Requires(player != null && opponent != null);
-
-            return new Game(player, opponent) {Winner = player};
-        }
-
-        public static Game LosesTo(this Player player, Player opponent)
-        {
-            Contract.Requires(player != null && opponent != null);
-
-            return new Game(player, opponent) {Winner = opponent};
-        }
-
-        public static Game Draws(this Player player, Player opponent)
-        {
-            Contract.Requires(player != null && opponent != null);
-
-            return new Game(player, opponent);
         }
     }
 }

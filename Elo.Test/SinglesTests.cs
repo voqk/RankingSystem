@@ -6,7 +6,7 @@ using RankingSystems;
 namespace Elo.Test
 {
     [TestClass]
-    public class Tests
+    public class SinglesTests
     {
         [TestMethod]
         public void TestPlayerAGainsWhatPlayerBLoses()
@@ -14,14 +14,14 @@ namespace Elo.Test
             var elo = new EloSystem(k: 32);
             var rp = new RatingPeriod(elo);
             var playerAStart = 1500;
-            var playerA = new Player(new Ranking(playerAStart, DateTimeOffset.UtcNow));
+            var teamA = new Team(new Player(playerAStart));
             var playerBStart = 1700;
-            var playerB = new Player(new Ranking(playerBStart, DateTimeOffset.UtcNow));
+            var teamB = new Team(new Player(playerBStart));
 
-            rp.AddGame(playerA.Defeats(playerB));
+            rp.AddGame(teamA.Defeats(teamB));
             rp.UpdateRankings(DateTimeOffset.UtcNow);
-            var diffA = Math.Abs(playerA.Ranking.Value - playerAStart);
-            var diffB = Math.Abs(playerB.Ranking.Value - playerBStart);
+            var diffA = Math.Abs(teamA.Ranking.Value - playerAStart);
+            var diffB = Math.Abs(teamB.Ranking.Value - playerBStart);
 
             Assert.AreEqual(diffA, diffB, .1);
         }
@@ -41,15 +41,15 @@ namespace Elo.Test
             var elo = new EloSystem(k: 32);
             var tournament = new RatingPeriod(elo);
 
-            var playerA = new Player(new Ranking(1613, DateTimeOffset.Now));
+            var teamA = new Team(new Player(1613));
 
             var games = new[]
             {
-                playerA.LosesTo(new Player(new Ranking(1609, DateTimeOffset.Now))),
-                playerA.Draws(new Player(new Ranking(1477, DateTimeOffset.Now))),
-                playerA.Defeats(new Player(new Ranking(1388, DateTimeOffset.Now))),
-                playerA.Defeats(new Player(new Ranking(1586, DateTimeOffset.Now))),
-                playerA.LosesTo(new Player(new Ranking(1720, DateTimeOffset.Now)))
+                teamA.LosesTo(new Team(new Player(1609))),
+                teamA.Draws(new Team(new Player(1477))),
+                teamA.Defeats(new Team(new Player(1388))),
+                teamA.Defeats(new Team(new Player(1586))),
+                teamA.LosesTo(new Team(new Player(1720)))
             };
 
             foreach (var game in games)
@@ -58,7 +58,7 @@ namespace Elo.Test
             }
 
             tournament.UpdateRankings(DateTimeOffset.Now);
-            Assert.AreEqual(1601, playerA.Ranking.Value, 1.0);
+            Assert.AreEqual(1601, teamA.Ranking.Value, 1.0);
         }
     }
 }

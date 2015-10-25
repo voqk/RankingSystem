@@ -9,20 +9,20 @@ namespace RankingSystems
 {
     public class Result
     {
-        public Result(Player player, Player opponent, Player winner)
+        public Result(Team team, Team opponent, Team winner)
         {
-            Contract.Requires(player != null && opponent != null);
-            Contract.Requires(winner == null || winner.Equals(player) || winner.Equals(opponent));
+            Contract.Requires(team != null && opponent != null);
+            Contract.Requires(winner == null || winner.Equals(team) || winner.Equals(opponent));
 
-            this.Player = player;
+            this.Team = team;
             this.Opponent = opponent;
 
-            this.ActualScore = GetActualResult(player, winner);
+            this.ActualScore = GetActualResult(team, winner);
         }
 
-        public Player Player { get; private set; }
+        public Team Team { get; private set; }
 
-        public Player Opponent { get; private set; }
+        public Team Opponent { get; private set; }
 
         public double ActualScore { get; private set; }
 
@@ -30,23 +30,23 @@ namespace RankingSystems
         {
             get
             {
-                var rPlayer = this.Player.Ranking.Value;
+                var rTeam = this.Team.Ranking.Value;
                 var rOpponent = this.Opponent.Ranking.Value;
-                var qPlayer = Math.Pow(10, rPlayer / 400);
+                var qTeam = Math.Pow(10, rTeam / 400);
                 var qOpponent = Math.Pow(10, rOpponent / 400);
 
-                return qPlayer/(qPlayer + qOpponent);
+                return qTeam/(qTeam + qOpponent);
             }
         }
 
-        private static double GetActualResult(Player player, Player winner)
+        private static double GetActualResult(Team team, Team winner)
         {
             if (winner == null) // Draw
             {
                 return 0.5;
             }
 
-            if (winner.Equals(player)) // Win
+            if (winner.Equals(team)) // Win
             {
                 return 1.0;
             }
