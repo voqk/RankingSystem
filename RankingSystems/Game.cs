@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Messaging;
+using RankingSystems.Interfaces;
 
 namespace RankingSystems
 {
     public class Game
     {
-        private Team _winner;
+        private ITeam _winner;
 
-        public Game(Team teamA, Team teamB)
+        public Game(ITeam teamA, ITeam teamB)
         {
             Contract.Requires(teamA != null && teamB != null);
 
@@ -19,10 +20,10 @@ namespace RankingSystems
             this.TeamB = teamB;
         }
 
-        public Team TeamA { get; }
-        public Team TeamB { get; }
+        public ITeam TeamA { get; }
+        public ITeam TeamB { get; }
 
-        public Team Winner
+        public ITeam Winner
         {
             get { return _winner; }
             set

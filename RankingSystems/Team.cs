@@ -4,14 +4,15 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RankingSystems.Interfaces;
 
 namespace RankingSystems
 {
-    public class Team
+    public class Team : ITeam
     {
-        private readonly List<Player> _players;
+        private readonly List<IRanked> _players;
 
-        public Team(params Player[] players)
+        public Team(params IRanked[] players)
         {
             Contract.Requires(players != null && players.Any());
 
@@ -19,16 +20,16 @@ namespace RankingSystems
         }
 
         // Team of one.
-        public Team(Player player)
+        public Team(IRanked player)
         {
             Contract.Requires(player != null);
 
-            _players = new List<Player>(1) { player };
+            _players = new List<IRanked>(1) { player };
         }
 
-        public Ranking Ranking => new Ranking(_players.Select(p => p.Ranking.Value).Average(), DateTimeOffset.Now);
+        public Rank Rank => new Rank(_players.Select(p => p.Rank.Value).Average());
 
-        public IReadOnlyList<Player> Players => _players.AsReadOnly();
+        public IEnumerable<IRanked> Players => _players;
     }
 
     /// <summary>

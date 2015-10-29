@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using RankingSystems.Interfaces;
 
 namespace RankingSystems
 {
@@ -25,17 +26,15 @@ namespace RankingSystems
             _games.Add(game);
         }
 
-        public void UpdateRankings(DateTimeOffset timeStamp)
+        public IEnumerable<Tuple<IRanked, Rank>> UpdateRankings()
         {
             // Get expected and actual scores over the entire rating period
-            // for each player. Calulate a new ranking and add the new ranking
+            // for each player. Calulate a new Rank and add the new Rank
             // to the player's rankings.
 
             var results = _games.SelectMany(g => g.GetResults()).ToList();
 
             var resultsByTeam = results.GroupBy(r => r.Team, (t, rs) => new { Team = t, Results = rs });
-
-            var rankingCache = new Dictionary<Player, Ranking>();
 
             // Calculate new rankings but don't apply them until iterating through
             // the entire set.
@@ -47,18 +46,10 @@ namespace RankingSystems
 
                 foreach (var player in team.Players)
                 {
-                    var oldRanking = player.Ranking.Value;
+                    var oldRanking = player.Rank.Value;
                     var newRanking = oldRanking + _elo.K * (actual - expected);
-                    rankingCache.Add(player, new Ranking(newRanking, timeStamp));
+                    yield return Tuple.Create(player, new Rank(newRanking));
                 }
-            }
-
-            // Now apply new rankings
-            foreach (var kvp in rankingCache)
-            {
-                var player = kvp.Key;
-                var ranking = kvp.Value;
-                player.UpdateRanking(ranking);
             }
         }
     }

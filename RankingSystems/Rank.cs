@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace RankingSystems
 {
-    public class Ranking
+    public class Rank
     {
-        public Ranking(double value, DateTimeOffset timeStamp)
+        public Rank(double value)
         {
             this.Value = value;
-            this.TimeStamp = timeStamp;
         }
 
         public double Value { get; }
-        public DateTimeOffset TimeStamp { get; }
     }
 }

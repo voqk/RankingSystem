@@ -3,33 +3,35 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using RankingSystems.Interfaces;
 
 namespace RankingSystems
 {
-    public class Player
+    public class Player : IRanked
     {
-        private readonly List<Ranking> _rankings;
-         
-        public Player(Ranking initRanking)
+        private readonly List<Rank> _rankings;
+
+        public Player(Rank initRank)
         {
-            Contract.Requires(initRanking != null);
-            _rankings = new List<Ranking> { initRanking };
+            Contract.Requires(initRank != null);
+            Rank = initRank;
+            _rankings = new List<Rank> { initRank };
         }
 
         public Player(double initRanking)
         {
-            _rankings = new List<Ranking> { new Ranking(initRanking, DateTimeOffset.UtcNow)};
+            var rank = new Rank(initRanking);
+            this.Rank = rank;
+            _rankings = new List<Rank> { rank };
         }
 
-        public Ranking Ranking => _rankings.OrderBy(r => r.TimeStamp).Last();
+        public Rank Rank { get; }
 
-        public IReadOnlyList<Ranking> All => _rankings.OrderBy(r => r.TimeStamp).ToList().AsReadOnly();
-
-        public void UpdateRanking(Ranking ranking)
+        public Player SetNewRank(Rank rank)
         {
-            Contract.Requires(ranking != null);
+            Contract.Requires(rank != null);
 
-            _rankings.Add(ranking);
+            return new Player(rank);
         }
     }
 }

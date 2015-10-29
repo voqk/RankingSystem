@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RankingSystems;
 
@@ -19,9 +20,9 @@ namespace Elo.Test
             var teamB = new Team(new Player(playerBStart));
 
             rp.AddGame(teamA.Defeats(teamB));
-            rp.UpdateRankings(DateTimeOffset.UtcNow);
-            var diffA = Math.Abs(teamA.Ranking.Value - playerAStart);
-            var diffB = Math.Abs(teamB.Ranking.Value - playerBStart);
+            rp.UpdateRankings();
+            var diffA = Math.Abs(teamA.Rank.Value - playerAStart);
+            var diffB = Math.Abs(teamB.Rank.Value - playerBStart);
 
             Assert.AreEqual(diffA, diffB, .1);
         }
@@ -41,7 +42,8 @@ namespace Elo.Test
             var elo = new EloSystem(k: 32);
             var tournament = new RatingPeriod(elo);
 
-            var teamA = new Team(new Player(1613));
+            var playerA = new Player(1613);
+            var teamA = new Team(playerA);
 
             var games = new[]
             {
@@ -57,8 +59,9 @@ namespace Elo.Test
                 tournament.AddGame(game);
             }
 
-            tournament.UpdateRankings(DateTimeOffset.Now);
-            Assert.AreEqual(1601, teamA.Ranking.Value, 1.0);
+            var teamsToNewRank = tournament.UpdateRankings();
+            var teamANewRank = teamsToNewRank.First(tup => tup.Item1 == playerA).Item2;
+            Assert.AreEqual(1601, teamANewRank.Value, 1.0);
         }
     }
 }

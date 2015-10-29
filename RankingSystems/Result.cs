@@ -4,12 +4,13 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RankingSystems.Interfaces;
 
 namespace RankingSystems
 {
     public class Result
     {
-        public Result(Team team, Team opponent, Team winner)
+        public Result(ITeam team, ITeam opponent, ITeam winner)
         {
             Contract.Requires(team != null && opponent != null);
             Contract.Requires(winner == null || winner.Equals(team) || winner.Equals(opponent));
@@ -20,9 +21,9 @@ namespace RankingSystems
             this.ActualScore = GetActualResult(team, winner);
         }
 
-        public Team Team { get; private set; }
+        public ITeam Team { get; private set; }
 
-        public Team Opponent { get; private set; }
+        public ITeam Opponent { get; private set; }
 
         public double ActualScore { get; private set; }
 
@@ -30,8 +31,8 @@ namespace RankingSystems
         {
             get
             {
-                var rTeam = this.Team.Ranking.Value;
-                var rOpponent = this.Opponent.Ranking.Value;
+                var rTeam = this.Team.Rank.Value;
+                var rOpponent = this.Opponent.Rank.Value;
                 var qTeam = Math.Pow(10, rTeam / 400);
                 var qOpponent = Math.Pow(10, rOpponent / 400);
 
@@ -39,7 +40,7 @@ namespace RankingSystems
             }
         }
 
-        private static double GetActualResult(Team team, Team winner)
+        private static double GetActualResult(ITeam team, ITeam winner)
         {
             if (winner == null) // Draw
             {

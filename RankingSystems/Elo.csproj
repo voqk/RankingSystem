@@ -129,9 +129,11 @@
   <ItemGroup>
     <Compile Include="EloSystem.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Interfaces\IRanked.cs" />
+    <Compile Include="Interfaces\ITeam.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ranking.cs" />
+    <Compile Include="Rank.cs" />
     <Compile Include="RatingPeriod.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="Team.cs" />
