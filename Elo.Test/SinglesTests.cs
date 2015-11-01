@@ -15,14 +15,16 @@ namespace Elo.Test
             var elo = new EloSystem(k: 32);
             var rp = new RatingPeriod(elo);
             var playerAStart = 1500;
-            var teamA = new Team(new Player(playerAStart));
+            var playerA = new Player(playerAStart);
+            var teamA = new Team(playerA);
             var playerBStart = 1700;
-            var teamB = new Team(new Player(playerBStart));
+            var playerB = new Player(playerBStart);
+            var teamB = new Team(playerB);
 
             rp.AddGame(teamA.Defeats(teamB));
-            rp.UpdateRankings();
-            var diffA = Math.Abs(teamA.Rank.Value - playerAStart);
-            var diffB = Math.Abs(teamB.Rank.Value - playerBStart);
+            var newRankings = rp.UpdateRankings();
+            var diffA = Math.Abs(newRankings.Where(p => p.Item1 == playerA).First().Item2.Value - playerAStart);
+            var diffB = Math.Abs(newRankings.Where(p => p.Item1 == playerB).First().Item2.Value - playerBStart);
 
             Assert.AreEqual(diffA, diffB, .1);
         }
